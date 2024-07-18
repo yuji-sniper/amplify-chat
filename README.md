@@ -1,1 +1,1 @@
-# amplify-chat
+# amplify-chat-front
