@@ -1,0 +1,11 @@
+services:
+  node:
+    container_name: node
+    build:
+      context: .
+      dockerfile: ./.docker/node/Dockerfile
+    volumes:
+      - .:/user/src/app
+    ports:
+      - 3000:3000
+    command: yarn dev
