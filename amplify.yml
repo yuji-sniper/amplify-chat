@@ -3,6 +3,8 @@ frontend:
   phases:
     preBuild:
       commands:
+        - nvm install 20.15.1
+        - nvm use 20.15.1
         - yarn install
     build:
       commands:
@@ -13,4 +15,5 @@ frontend:
       - '**/*'
   cache:
     paths:
-      - node_modules/**/*
+      - '.next/cache/**/*'
+      - 'node_modules/**/*'
