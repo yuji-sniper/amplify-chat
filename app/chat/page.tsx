@@ -7,7 +7,7 @@ function Index() {
   const getRoomsEndpoint = `${apiDomain}/rooms`;
 
   // 部屋取得APIのレスポンスを表示
-  // const [rooms, setRooms] = React.useState('');
+  const [rooms, setRooms] = React.useState('');
   React.useEffect(() => {
     const getRooms = async () => {
       const response: Response = await fetch(getRoomsEndpoint, {
@@ -17,11 +17,9 @@ function Index() {
           'Content-Type': 'application/json',
         },
       });
-      console.log(response);
-      const resJson = await response.json();
-      console.log(resJson);
-      // setRooms(JSON.parse(resJson.body).message);
-      // console.log(rooms);
+      const body = await response.json();
+      console.log(body);
+      setRooms(body.message);
     }
 
     getRooms();
@@ -30,9 +28,9 @@ function Index() {
   return (
     <>
       <h1>Chat</h1>
-      {/* <div>
+      <div>
         {rooms}
-      </div> */}
+      </div>
     </>
   );
 }
