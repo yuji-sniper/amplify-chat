@@ -6,8 +6,9 @@ function Index() {
   const apiDomain = 'https://on7h3cdrrc.execute-api.ap-northeast-1.amazonaws.com/poc'
   const getRoomsEndpoint = `${apiDomain}/rooms`;
 
-  // 部屋取得APIのレスポンスを表示
   const [rooms, setRooms] = React.useState('');
+  const [socket, setSocket] = React.useState<WebSocket>();
+
   React.useEffect(() => {
     const getRooms = async () => {
       const response: Response = await fetch(getRoomsEndpoint, {
@@ -23,7 +24,32 @@ function Index() {
     }
 
     getRooms();
+
+    const socket = new WebSocket('wss://zmtmuxcpmb.execute-api.ap-northeast-1.amazonaws.com/poc-amplify-chat-chat-websocket-poc/');
+
+    setSocket(socket);
+
+    socket.onmessage = (event) => {
+      console.log(event.data);
+    }
+
+    return () => {
+      socket.close();
+    }
   }, []);
+
+  const handleSend = () => {
+    socket?.send(
+      JSON.stringify({
+        action: 'sendMessage',
+        data: {
+          room: 'room1',
+          user: 'user1',
+          message: 'Hello, world!',
+        },
+      })
+    );
+  }
 
   return (
     <>
@@ -31,6 +57,7 @@ function Index() {
       <div>
         {rooms}
       </div>
+      <button onClick={handleSend}>Send</button>
     </>
   );
 }
