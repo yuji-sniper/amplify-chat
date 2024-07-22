@@ -3,6 +3,12 @@
 import * as React from 'react';
 
 function Index() {
+  // 環境変数を取得
+  console.log(process.env.API_DOMAIN);
+  console.log(process.env.WEBSOCKET_ENDPOINT);
+  console.log(process.env.NEXT_PUBLIC_API_DOMAIN);
+  console.log(process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT);
+
   const apiDomain = 'https://on7h3cdrrc.execute-api.ap-northeast-1.amazonaws.com/poc'
   const getRoomsEndpoint = `${apiDomain}/rooms`;
 
