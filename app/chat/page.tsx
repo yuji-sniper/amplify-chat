@@ -7,6 +7,7 @@ function Index() {
   const getRoomsEndpoint = `${apiDomain}/rooms`;
 
   const [rooms, setRooms] = React.useState('');
+  const [message, setMessage] = React.useState('');
   const [socket, setSocket] = React.useState<WebSocket>();
 
   React.useEffect(() => {
@@ -31,6 +32,8 @@ function Index() {
 
     socket.onmessage = (event) => {
       console.log(event.data);
+      const data = JSON.parse(event.data);
+      setMessage(data.message);
     }
 
     return () => {
@@ -39,6 +42,7 @@ function Index() {
   }, []);
 
   const handleSend = () => {
+    console.log('send');
     socket?.send(
       JSON.stringify({
         action: 'sendMessage',
@@ -56,6 +60,9 @@ function Index() {
       <h1>Chat</h1>
       <div>
         {rooms}
+      </div>
+      <div>
+        {message}
       </div>
       <button onClick={handleSend}>Send</button>
     </>
