@@ -17,8 +17,9 @@ function Index() {
           'Content-Type': 'application/json',
         },
       });
-      const data = await response.json();
-      setRooms(data);
+      console.log(response);
+      const resJson = await response.json();
+      setRooms(JSON.parse(resJson.body).message);
       console.log(rooms);
     }
 
@@ -26,7 +27,12 @@ function Index() {
   }, []);
 
   return (
-    <h1>Chat</h1>
+    <>
+      <h1>Chat</h1>
+      <div>
+        {rooms}
+      </div>
+    </>
   );
 }
 
