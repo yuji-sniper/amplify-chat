@@ -15,9 +15,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useRouter } from 'next/navigation';
+import { title } from 'process';
 
 const pages = [
-  { title: 'Home', path: '/' },
+  { title: 'HOME', path: '/' },
+  { title: 'CHAT', path: '/chat' },
 ];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
