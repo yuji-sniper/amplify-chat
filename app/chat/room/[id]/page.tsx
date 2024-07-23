@@ -40,19 +40,19 @@ export default function Page(
   }
 
   const initializeWebSocket = () => {
-    const socket = new WebSocket(websocketEndpoint!);
+    const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
     setSocket(socket);
 
-    socket.onopen = () => {
-      socket.send(
-        JSON.stringify({
-          action: '$connect',
-          data: {
-            room_id: roomId,
-          }
-        })
-      );
-    }
+    // socket.onopen = () => {
+    //   socket.send(
+    //     JSON.stringify({
+    //       action: '$connect',
+    //       data: {
+    //         room_id: roomId,
+    //       }
+    //     })
+    //   );
+    // }
 
     socket.onmessage = (event) => {
       const newMessage = JSON.parse(event.data);
@@ -61,14 +61,14 @@ export default function Page(
     }
 
     return () => {
-      socket.send(
-        JSON.stringify({
-          action: '$disconnect',
-          data: {
-            room_id: roomId,
-          }
-        })
-      );
+      // socket.send(
+      //   JSON.stringify({
+      //     action: '$disconnect',
+      //     data: {
+      //       room_id: roomId,
+      //     }
+      //   })
+      // );
       socket.close();
     }
   }
