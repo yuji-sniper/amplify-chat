@@ -39,8 +39,8 @@ export default function Index() {
     getRooms();
   }, []);
 
-  // 部屋作成（入力値room_nameから部屋を作成）
-  const handleCreateRoom = async (room_name: string) => {
+  // 部屋作成
+  const handleCreateRoom = async (room_name: string, form: HTMLFormElement) => {
     console.log(room_name);
     const response: Response = await fetch(createRoomEndpoint, {
       method: 'POST',
@@ -55,6 +55,7 @@ export default function Index() {
     const body = await response.json();
     console.log(body);
     await getRooms();
+    form.reset();
   }
 
   return (
@@ -69,7 +70,7 @@ export default function Index() {
           e.preventDefault();
           const form = e.currentTarget;
           const target = form.elements as FormElement;
-          handleCreateRoom(target.room_name.value);
+          handleCreateRoom(target.room_name.value, form);
         }}
       >
         <input type="text" name="room_name" />
