@@ -43,32 +43,26 @@ export default function Page(
     const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
     setSocket(socket);
 
-    // socket.onopen = () => {
-    //   socket.send(
-    //     JSON.stringify({
-    //       action: '$connect',
-    //       data: {
-    //         room_id: roomId,
-    //       }
-    //     })
-    //   );
-    // }
-
     socket.onmessage = (event) => {
       const newMessage = JSON.parse(event.data);
       console.log(newMessage);
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     }
 
+    socket.onclose = () => {
+      if (socket.readyState !== WebSocket.CLOSED) {
+        socket.send(
+          JSON.stringify({
+            action: 'disconnect',
+            data: {
+              room_id: roomId,
+            }
+          })
+        )
+      }
+    }
+
     return () => {
-      // socket.send(
-      //   JSON.stringify({
-      //     action: '$disconnect',
-      //     data: {
-      //       room_id: roomId,
-      //     }
-      //   })
-      // );
       socket.close();
     }
   }
