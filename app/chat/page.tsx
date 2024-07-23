@@ -41,7 +41,7 @@ export default function Page() {
   // 部屋作成
   const handleCreateRoom = async (room_name: string, form: HTMLFormElement) => {
     console.log(room_name);
-    const response: Response = await fetch(createRoomEndpoint, {
+    await fetch(createRoomEndpoint, {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -51,8 +51,6 @@ export default function Page() {
         name: room_name,
       }),
     });
-    const body = await response.json();
-    console.log(body);
     await getRooms();
   }
 

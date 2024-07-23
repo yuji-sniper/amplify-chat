@@ -36,7 +36,6 @@ export default function Page(
       },
     });
     const body = await response.json();
-    console.log(body);
     setMessages(body.messages);
   }
 
@@ -51,6 +50,8 @@ export default function Page(
     }
 
     socket.onclose = async () => {
+      const connectionId = socket.url.split('/').pop();
+      console.log("connectionId:", connectionId);
       const response = await fetch(deleteConnectionEndpoint, {
         method: 'DELETE',
         mode: 'cors',
@@ -59,6 +60,7 @@ export default function Page(
         },
         body: JSON.stringify({
           room_id: roomId,
+          connection_id: connectionId,
         }),
       });
       const body = response.json();
