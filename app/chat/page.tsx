@@ -2,87 +2,60 @@
 
 import * as React from 'react';
 
-type Room = {
+interface Room {
   id: string;
   name: string;
 }
 
+interface FormElement extends HTMLFormControlsCollection {
+  room_name: HTMLInputElement;
+}
+
 export default function Index() {
   // 環境変数を取得
-  console.log(process.env.API_DOMAIN);
-  console.log(process.env.WEBSOCKET_ENDPOINT);
   console.log(process.env.NEXT_PUBLIC_API_DOMAIN);
   console.log(process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT);
 
-  const apiDomain = 'https://on7h3cdrrc.execute-api.ap-northeast-1.amazonaws.com/poc'
+  const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN;
   const getRoomsEndpoint = `${apiDomain}/rooms`;
   const createRoomEndpoint = `${apiDomain}/room`;
 
   const [rooms, setRooms] = React.useState<Room[]>([]);
-  // const [message, setMessage] = React.useState('');
-  // const [socket, setSocket] = React.useState<WebSocket>();
+
+  const getRooms = async () => {
+    const response: Response = await fetch(getRoomsEndpoint, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const body = await response.json();
+    console.log(body);
+    setRooms(body.rooms);
+  }
 
   React.useEffect(() => {
-    const getRooms = async () => {
-      const response: Response = await fetch(getRoomsEndpoint, {
-        method: 'GET',
-        mode: 'cors',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      const body = await response.json();
-      console.log(body);
-      setRooms(body.rooms);
-    }
-
     getRooms();
-
-    // const socket = new WebSocket('wss://zmtmuxcpmb.execute-api.ap-northeast-1.amazonaws.com/poc-amplify-chat-chat-websocket-poc/');
-
-  //   setSocket(socket);
-
-  //   socket.onmessage = (event) => {
-  //     console.log(event.data);
-  //     const data = JSON.parse(event.data);
-  //     setMessage(data.message);
-  //   }
-
-  //   return () => {
-  //     socket.close();
-  //   }
   }, []);
 
-  // 部屋作成（入力値nameから部屋を作成）
-  const handleCreateRoom = async (name: string) => {
-    console.log(name);
+  // 部屋作成（入力値room_nameから部屋を作成）
+  const handleCreateRoom = async (room_name: string) => {
+    console.log(room_name);
     const response: Response = await fetch(createRoomEndpoint, {
       method: 'POST',
       mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({
+        name: room_name,
+      }),
     });
     const body = await response.json();
     console.log(body);
-    setRooms([...rooms, body.room]);
+    await getRooms();
   }
-  
-
-  // const handleSend = () => {
-  //   console.log('send');
-  //   socket?.send(
-  //     JSON.stringify({
-  //       action: 'sendMessage',
-  //       data: {
-  //         room: 'room1',
-  //         user: 'user1',
-  //         message: 'Hello, world!',
-  //       },
-  //     })
-  //   );
-  // }
 
   return (
     <>
@@ -94,25 +67,20 @@ export default function Index() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          const name = e.currentTarget.name;
-          handleCreateRoom(name);
+          const form = e.currentTarget;
+          const target = form.elements as FormElement;
+          handleCreateRoom(target.room_name.value);
         }}
       >
-        <input type="text" name="name" />
+        <input type="text" name="room_name" />
         <button type="submit">Create Room</button>
       </form>
       
-
       <ul>
         {rooms.map((room) => (
           <li key={room.id}>{room.name}</li>
         ))}
       </ul>
-      
-      {/* <div>
-        {message}
-      </div> */}
-      {/* <button onClick={handleSend}>Send</button> */}
     </>
   );
 }
