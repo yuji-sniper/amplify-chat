@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
 interface Room {
@@ -11,14 +12,12 @@ interface FormElement extends HTMLFormControlsCollection {
   room_name: HTMLInputElement;
 }
 
-export default function Index() {
-  // 環境変数を取得
-  console.log(process.env.NEXT_PUBLIC_API_DOMAIN);
-  console.log(process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT);
-
+export default function Page() {
   const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN;
   const getRoomsEndpoint = `${apiDomain}/rooms`;
   const createRoomEndpoint = `${apiDomain}/room`;
+
+  const router = useRouter();
 
   const [rooms, setRooms] = React.useState<Room[]>([]);
 
@@ -55,7 +54,6 @@ export default function Index() {
     const body = await response.json();
     console.log(body);
     await getRooms();
-    form.reset();
   }
 
   return (
@@ -71,6 +69,7 @@ export default function Index() {
           const form = e.currentTarget;
           const target = form.elements as FormElement;
           handleCreateRoom(target.room_name.value, form);
+          form.reset();
         }}
       >
         <input type="text" name="room_name" />
@@ -79,7 +78,13 @@ export default function Index() {
       
       <ul>
         {rooms.map((room) => (
-          <li key={room.id}>{room.name}</li>
+          <li key={room.id}
+            onClick={() => {
+              router.push(`/chat/room/${room.id}`);
+            }}
+          >
+            {room.name}
+          </li>
         ))}
       </ul>
     </>
