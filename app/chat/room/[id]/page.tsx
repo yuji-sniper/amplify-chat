@@ -19,6 +19,7 @@ export default function Page(
 
   const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN;
   const getMessagesEndpoint = `${apiDomain}/messages`;
+  const deleteConnectionEndpoint = `${apiDomain}/connection`;
   const websocketEndpoint = process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT;
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
@@ -49,17 +50,19 @@ export default function Page(
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     }
 
-    socket.onclose = () => {
-      if (socket.readyState !== WebSocket.CLOSED) {
-        socket.send(
-          JSON.stringify({
-            action: 'disconnect',
-            data: {
-              room_id: roomId,
-            }
-          })
-        )
-      }
+    socket.onclose = async () => {
+      const response = await fetch(deleteConnectionEndpoint, {
+        method: 'DELETE',
+        mode: 'cors',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          room_id: roomId,
+        }),
+      });
+      const body = response.json();
+      console.log(body);
     }
 
     return () => {
