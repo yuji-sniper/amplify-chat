@@ -79,6 +79,7 @@ export default function Page() {
       <ul>
         {rooms.map((room) => (
           <li key={room.id}
+            style={{ cursor: 'pointer' }}
             onClick={() => {
               router.push(`/chat/room/${room.id}`);
             }}
