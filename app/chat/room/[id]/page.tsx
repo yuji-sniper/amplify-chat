@@ -44,7 +44,6 @@ export default function Page(
     });
     const body = await response.json();
     setRoom(body.room);
-    setMessages(body.messages);
   }
 
   const initializeWebSocket = () => {
