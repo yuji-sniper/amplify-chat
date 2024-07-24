@@ -55,7 +55,9 @@ export default function Page(
     socket.onmessage = (event) => {
       console.log('onmessage:', event.data);
       console.log('onmessage:', connectionId);
-      switch (event.data.type) {
+      const data = JSON.parse(event.data);
+      const type = data.type;
+      switch (type) {
         case 'message':
           const newMessage = JSON.parse(event.data.message);
           setMessages((prevMessages) => [...prevMessages, newMessage]);
@@ -65,7 +67,7 @@ export default function Page(
           console.log('onmessage connection:', connectionId);
           break;
         default:
-          console.log('Unknown message type');
+          console.log(data.message);
       }
     }
 
