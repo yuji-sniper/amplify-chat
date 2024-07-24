@@ -61,7 +61,6 @@ export default function Page() {
         flexDirection='column'
         justifyContent='center'
         alignItems='center'
-        height='100px'
         padding={2}
       >
         <h1>Chat</h1>
@@ -93,11 +92,18 @@ export default function Page() {
         </form>
         
         {/* 部屋一覧 */}
-        <Grid2 container spacing={2}>
+        <Grid2
+          container
+          spacing={2}
+          width={1}
+        >
           {rooms.map((room) => (
             <Grid2 xs={4}>
               <Card
-                style={{ cursor: 'pointer' }}
+                style={{
+                  cursor: 'pointer',
+                  padding: '10px',
+                }}
                 onClick={() => {
                   router.push(`/chat/room/${room.id}`);
                 }}

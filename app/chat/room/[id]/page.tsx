@@ -96,10 +96,16 @@ export default function Page(
         flexDirection='column'
         justifyContent='center'
         alignItems='center'
-        height='100px'
-        padding={2}
+        padding={4}
       >
-        <Paper elevation={3} style={{ width: '100%', maxWidth: '600px', padding: '20px' }}>
+        <Paper
+          elevation={3}
+          style={{
+            width: '100%',
+            maxWidth: '600px',
+            padding: '20px'
+          }}
+        >
           <Typography variant="h4" gutterBottom>
             Chat Room: {roomId}
           </Typography>
