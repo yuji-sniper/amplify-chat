@@ -53,15 +53,16 @@ export default function Page(
     }
 
     socket.onmessage = (event) => {
-      console.log('onmessage:', event.data);
-      console.log('onmessage:', connectionId);
       const data = JSON.parse(event.data);
+      console.log('onmessage:', connectionId);
+      console.log('onmessage:', data);
       const type = data.type;
       switch (type) {
         case 'message':
           setMessages((prevMessages) => [...prevMessages, data.message]);
           break;
         case 'connection':
+          console.log('onmessage connection:', data.connection_id);
           setConnectionId(data.connection_id);
           console.log('onmessage connection:', connectionId);
           break;
