@@ -56,7 +56,7 @@ export default function Page(
       console.log(event.data);
       switch (event.data.type) {
         case 'message':
-          const newMessage = JSON.parse(event.data);
+          const newMessage = JSON.parse(event.data.message);
           setMessages((prevMessages) => [...prevMessages, newMessage]);
           break;
         case 'connection':
