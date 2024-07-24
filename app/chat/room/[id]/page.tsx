@@ -94,6 +94,7 @@ export default function Page(
   }
 
   const handleSendMessage = (text: string) => {
+    if (text === '') {return;}
     socket?.send(
       JSON.stringify({
         action: 'sendMessage',
@@ -115,7 +116,6 @@ export default function Page(
 
   React.useEffect(() => {
     const cleanupWebSocket = initializeWebSocket();
-
     return cleanupWebSocket;
   }, []);
 
