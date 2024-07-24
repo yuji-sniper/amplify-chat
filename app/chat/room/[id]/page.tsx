@@ -59,11 +59,10 @@ export default function Page(
       const type = data.type;
       switch (type) {
         case 'message':
-          const newMessage = JSON.parse(event.data.message);
-          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          setMessages((prevMessages) => [...prevMessages, data.message]);
           break;
         case 'connection':
-          setConnectionId(event.data.connection_id);
+          setConnectionId(data.connection_id);
           console.log('onmessage connection:', connectionId);
           break;
         default:
