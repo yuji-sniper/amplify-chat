@@ -1,5 +1,7 @@
 "use client";
 
+import { Box, Button, Card, TextField } from '@mui/material';
+import Grid2 from '@mui/material/Unstable_Grid2';
 import { useRouter } from 'next/navigation';
 import * as React from 'react';
 
@@ -54,36 +56,58 @@ export default function Page() {
 
   return (
     <>
-      <h1>Chat</h1>
-
-      <h2>Rooms</h2>
-
-      {/* 部屋作成フォーム */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = e.currentTarget;
-          const target = form.elements as FormElement;
-          handleCreateRoom(target.room_name.value, form);
-          form.reset();
-        }}
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='center'
+        alignItems='center'
+        height='100px'
+        padding={2}
       >
-        <input type="text" name="room_name" />
-        <button type="submit">Create Room</button>
-      </form>
-      
-      <ul>
-        {rooms.map((room) => (
-          <li key={room.id}
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              router.push(`/chat/room/${room.id}`);
-            }}
+        <h1>Chat</h1>
+
+        {/* 部屋作成フォーム */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const form = e.currentTarget;
+            const target = form.elements as FormElement;
+            handleCreateRoom(target.room_name.value, form);
+            form.reset();
+          }}
+        >
+          <div>
+            <TextField
+              name="room_name"
+              label="Room Name"
+              variant="outlined"
+              margin='normal'
+            />
+          </div>
+          <Button
+            variant='contained'
+            type="submit"
           >
-            {room.name}
-          </li>
-        ))}
-      </ul>
+            Create Room
+          </Button>
+        </form>
+        
+        {/* 部屋一覧 */}
+        <Grid2 container spacing={2}>
+          {rooms.map((room) => (
+            <Grid2 xs={4}>
+              <Card
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  router.push(`/chat/room/${room.id}`);
+                }}
+              >
+                <h2>{room.name}</h2>
+              </Card>
+            </Grid2>
+          ))}
+        </Grid2>
+      </Box>
     </>
   );
 }

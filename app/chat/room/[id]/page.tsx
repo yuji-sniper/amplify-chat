@@ -1,11 +1,11 @@
 "use client";
 
+import { Box, Button, List, ListItem, ListItemText, Paper, TextField, Typography } from '@mui/material';
 import * as React from 'react';
 
 interface Message {
   id: string;
   text: string;
-  created_at: string;
 }
 
 interface FormElement extends HTMLFormControlsCollection {
@@ -73,7 +73,7 @@ export default function Page(
 
   React.useEffect(() => {
     const cleanupWebSocket = initializeWebSocket();
-    
+
     return cleanupWebSocket;
   }, []);
 
@@ -91,25 +91,49 @@ export default function Page(
 
   return (
     <>
-      <h1>Room</h1>
-      <h2>{roomId}</h2>
-      <ul>
-        {messages.map((message: any) => (
-          <li key={message.id}>{message.text}</li>
-        ))}
-      </ul>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          const form = e.currentTarget;
-          const target = form.elements as FormElement;
-          handleSendMessage(target.text.value);
-          form.reset();
-        }}
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='center'
+        alignItems='center'
+        height='100px'
+        padding={2}
       >
-        <input type="text" name="text" />
-        <button type="submit">Send</button>
-      </form>
+        <Paper elevation={3} style={{ width: '100%', maxWidth: '600px', padding: '20px' }}>
+          <Typography variant="h4" gutterBottom>
+            Chat Room: {roomId}
+          </Typography>
+          <List style={{ maxHeight: '400px', overflow: 'auto' }}>
+            {messages.map((message: any) => (
+              <ListItem key={message.id}>
+                <ListItemText primary={message.text} secondary={new Date(message.created_at).toLocaleString()} />
+              </ListItem>
+            ))}
+          </List>
+          <Box component="form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const target = form.elements as FormElement;
+              handleSendMessage(target.text.value);
+              form.reset();
+            }}
+            mt={2}
+            display="flex"
+            alignItems="center"
+          >
+            <TextField
+              name="text"
+              label="Type your message"
+              variant="outlined"
+              fullWidth
+            />
+            <Button type="submit" variant="contained" color="primary" style={{ marginLeft: '10px' }}>
+              Send
+            </Button>
+          </Box>
+        </Paper>
+      </Box>
     </>
   );
 }
