@@ -53,7 +53,8 @@ export default function Page(
     }
 
     socket.onmessage = (event) => {
-      console.log(event.data);
+      console.log('onmessage:', event.data);
+      console.log('onmessage:', connectionId);
       switch (event.data.type) {
         case 'message':
           const newMessage = JSON.parse(event.data.message);
@@ -61,6 +62,7 @@ export default function Page(
           break;
         case 'connection':
           setConnectionId(event.data.connection_id);
+          console.log('onmessage connection:', connectionId);
           break;
         default:
           console.log('Unknown message type');
@@ -68,7 +70,8 @@ export default function Page(
     }
 
     socket.onclose = async () => {
-      const response = await fetch(deleteConnectionEndpoint, {
+      console.log('onclose:', connectionId);
+      await fetch(deleteConnectionEndpoint, {
         method: 'DELETE',
         mode: 'cors',
         headers: {
@@ -79,8 +82,6 @@ export default function Page(
           connection_id: connectionId,
         }),
       });
-      const body = response.json();
-      console.log(body);
     }
 
     return () => {
