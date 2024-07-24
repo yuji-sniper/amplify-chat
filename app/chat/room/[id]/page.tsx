@@ -23,7 +23,7 @@ export default function Page(
   const websocketEndpoint = process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT;
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
-  const [connectionId, setConnectionId] = React.useState<string|null>(null);
+  // const [connectionId, setConnectionId] = React.useState<string|null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   const getMessages = async () => {
@@ -42,6 +42,7 @@ export default function Page(
 
   const initializeWebSocket = () => {
     const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
+    let connectionId: string|null = null;
     setSocket(socket);
 
     socket.onopen = () => {
@@ -54,8 +55,6 @@ export default function Page(
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log('onmessage:', connectionId);
-      console.log('onmessage:', data);
       const type = data.type;
       switch (type) {
         case 'message':
@@ -63,8 +62,7 @@ export default function Page(
           break;
         case 'connection':
           console.log('onmessage connection:', data.connection_id);
-          setConnectionId(data.connection_id);
-          console.log('onmessage connection:', connectionId);
+          connectionId = data.connection_id;
           break;
         default:
           console.log(data.message);
