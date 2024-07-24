@@ -44,6 +44,14 @@ export default function Page(
     const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
     setSocket(socket);
 
+    socket.onopen = () => {
+      socket?.send(
+        JSON.stringify({
+          action: 'sendConnectionId',
+        })
+      );
+    }
+
     socket.onmessage = (event) => {
       console.log(event.data);
       switch (event.data.type) {
