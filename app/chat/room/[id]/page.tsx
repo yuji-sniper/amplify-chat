@@ -18,26 +18,11 @@ export default function Page(
   const roomId = params.id;
 
   const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN;
-  const getMessagesEndpoint = `${apiDomain}/messages`;
   const deleteConnectionEndpoint = `${apiDomain}/connection`;
   const websocketEndpoint = process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT;
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
-
-  const getMessages = async () => {
-    const url = new URL(getMessagesEndpoint);
-    url.searchParams.append('room_id', roomId);
-    const response: Response = await fetch(url, {
-      method: 'GET',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const body = await response.json();
-    setMessages(body.messages);
-  }
 
   const initializeWebSocket = () => {
     const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
@@ -87,9 +72,8 @@ export default function Page(
   }
 
   React.useEffect(() => {
-    getMessages();
-
     const cleanupWebSocket = initializeWebSocket();
+    
     return cleanupWebSocket;
   }, []);
 
