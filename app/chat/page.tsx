@@ -96,6 +96,7 @@ export default function Page() {
           container
           spacing={2}
           width={1}
+          margin={2}
         >
           {rooms.map((room) => (
             <Grid2 xs={4}>
