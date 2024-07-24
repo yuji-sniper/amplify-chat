@@ -23,6 +23,7 @@ export default function Page(
   const websocketEndpoint = process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT;
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
+  const [connectionId, setConnectionId] = React.useState<string|null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   const getMessages = async () => {
@@ -44,14 +45,21 @@ export default function Page(
     setSocket(socket);
 
     socket.onmessage = (event) => {
-      const newMessage = JSON.parse(event.data);
-      console.log(newMessage);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      console.log(event.data);
+      switch (event.data.type) {
+        case 'message':
+          const newMessage = JSON.parse(event.data);
+          setMessages((prevMessages) => [...prevMessages, newMessage]);
+          break;
+        case 'connection':
+          setConnectionId(event.data.connection_id);
+          break;
+        default:
+          console.log('Unknown message type');
+      }
     }
 
     socket.onclose = async () => {
-      const connectionId = socket.url.split('/').pop();
-      console.log("connectionId:", connectionId);
       const response = await fetch(deleteConnectionEndpoint, {
         method: 'DELETE',
         mode: 'cors',
