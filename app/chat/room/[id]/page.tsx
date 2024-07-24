@@ -3,6 +3,11 @@
 import { Box, Button, List, ListItem, ListItemText, Paper, TextField, Typography } from '@mui/material';
 import * as React from 'react';
 
+interface Room {
+  id: string;
+  name: string;
+}
+
 interface Message {
   id: string;
   text: string;
@@ -19,13 +24,28 @@ export default function Page(
   const roomId = params.id;
 
   const apiDomain = process.env.NEXT_PUBLIC_API_DOMAIN;
-  const deleteConnectionEndpoint = `${apiDomain}/connection`;
   const websocketEndpoint = process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT;
+  const getRoomEndpoint = `${apiDomain}/room-detail?room_id=${roomId}`;
+  const deleteConnectionEndpoint = `${apiDomain}/connection`;
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
+  const [room, setRoom] = React.useState<Room|null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
+
+  const getRoom = async () => {
+    const response: Response = await fetch(getRoomEndpoint, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const body = await response.json();
+    setRoom(body.room);
+    setMessages(body.messages);
+  }
 
   const initializeWebSocket = () => {
     const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
@@ -91,6 +111,10 @@ export default function Page(
   }
 
   React.useEffect(() => {
+    getRoom();
+  }, []);
+
+  React.useEffect(() => {
     const cleanupWebSocket = initializeWebSocket();
 
     return cleanupWebSocket;
@@ -118,7 +142,7 @@ export default function Page(
           }}
         >
           <Typography variant="h4" gutterBottom>
-            Chat Room: {roomId}
+            {room?.name}
           </Typography>
           <List style={{ maxHeight: '400px', overflow: 'auto' }}>
             {messages.map((message: any) => (
