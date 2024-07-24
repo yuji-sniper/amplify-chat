@@ -23,7 +23,6 @@ export default function Page(
   const websocketEndpoint = process.env.NEXT_PUBLIC_WEBSOCKET_ENDPOINT;
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
-  // const [connectionId, setConnectionId] = React.useState<string|null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
 
   const getMessages = async () => {
@@ -61,7 +60,6 @@ export default function Page(
           setMessages((prevMessages) => [...prevMessages, data.message]);
           break;
         case 'connection':
-          console.log('onmessage connection:', data.connection_id);
           connectionId = data.connection_id;
           break;
         default:
@@ -70,7 +68,6 @@ export default function Page(
     }
 
     socket.onclose = async () => {
-      console.log('onclose:', connectionId);
       await fetch(deleteConnectionEndpoint, {
         method: 'DELETE',
         mode: 'cors',
