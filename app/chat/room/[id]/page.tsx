@@ -6,6 +6,7 @@ import * as React from 'react';
 interface Message {
   id: string;
   text: string;
+  created_at: string;
 }
 
 interface FormElement extends HTMLFormControlsCollection {
@@ -23,6 +24,8 @@ export default function Page(
 
   const [socket, setSocket] = React.useState<WebSocket|null>(null);
   const [messages, setMessages] = React.useState<Message[]>([]);
+
+  const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
   const initializeWebSocket = () => {
     const socket = new WebSocket(`${websocketEndpoint}?room_id=${roomId}`);
@@ -71,12 +74,6 @@ export default function Page(
     }
   }
 
-  React.useEffect(() => {
-    const cleanupWebSocket = initializeWebSocket();
-
-    return cleanupWebSocket;
-  }, []);
-
   const handleSendMessage = (text: string) => {
     socket?.send(
       JSON.stringify({
@@ -88,6 +85,20 @@ export default function Page(
       })
     );
   }
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  React.useEffect(() => {
+    const cleanupWebSocket = initializeWebSocket();
+
+    return cleanupWebSocket;
+  }, []);
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   return (
     <>
@@ -115,6 +126,7 @@ export default function Page(
                 <ListItemText primary={message.text} secondary={new Date(message.created_at).toLocaleString()} />
               </ListItem>
             ))}
+            <div ref={messagesEndRef} />
           </List>
           <Box component="form"
             onSubmit={(e) => {
